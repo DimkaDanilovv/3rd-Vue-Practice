@@ -47,5 +47,34 @@ Vue.component('board', {
             click: false,
         };
     },
-
+    methods: {
+        editCard() {
+            this.showEditForm = true;
+        },
+        saveEdits() {
+            this.card.title = this.editedTitle;
+            this.card.description = this.editedDescription;
+            this.card.deadline = this.editedDeadline;
+            this.card.lastEdited = new Date().toLocaleString();
+            this.showEditForm = false;
+        },
+        onClick(){
+            this.click = true;
+        },
+        cancelEdits() {
+            this.showEditForm = false;
+        },
+        deleteCard() {
+            this.$emit('delete-card', this.columnIndex, this.cardIndex);
+        },
+        moveToInProgress() {
+            this.$emit('move-to-in-progress', this.card, this.columnIndex, this.cardIndex);
+        },
+        moveToTesting() {
+            this.$emit('move-to-testing', this.card, this.columnIndex, this.cardIndex);
+        },
+        moveToDone() {
+            this.$emit('move-to-done', this.card, this.columnIndex, this.cardIndex);
+        },
+    }
 });
