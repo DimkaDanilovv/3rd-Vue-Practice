@@ -171,5 +171,33 @@ new Vue({
                 }
             }
         },
+        moveToInProgress(originalCard, columnIndex, cardIndex) {
+            const inProgressIndex = 1;
+
+            this.columns[inProgressIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited,
+                comment: originalCard.comment
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        },
+        moveToTesting(originalCard, columnIndex, cardIndex) {
+            const testingIndex = 2;
+
+            this.columns[testingIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited,
+                comment: originalCard.comment
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        },
     }
 })
