@@ -199,5 +199,45 @@ new Vue({
 
             this.columns[columnIndex].cards.splice(cardIndex, 1);
         },
+        moveToDone(originalCard, columnIndex, cardIndex) {
+            const doneIndex = 3;
+
+            this.columns[doneIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited,
+                comment: originalCard.comment
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        },
+        moveToCompletedWithDeadlineCheck(originalCard, columnIndex, cardIndex) {
+            const completedIndex = 3;
+
+            const deadline = new Date(originalCard.deadline);
+            const currentDate = new Date();
+
+            if (currentDate > deadline) {
+                originalCard.status = 'С опозданием';
+            } else {
+                originalCard.status = 'Закончено во время';
+            }
+
+            this.columns[completedIndex].cards.push({
+                title: originalCard.title,
+                description: originalCard.description,
+                deadline: originalCard.deadline,
+                dateCreated: originalCard.dateCreated,
+                lastEdited: originalCard.lastEdited,
+                status: originalCard.status,
+                comment: originalCard.comment
+            });
+
+            this.columns[columnIndex].cards.splice(cardIndex, 1);
+        }
     }
-})
+});
+
+
