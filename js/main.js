@@ -124,3 +124,24 @@ Vue.component('board', {
         }
     }
 });
+
+new Vue({
+    el: '#app',
+    data: {
+        columns: [
+            { name: 'Запланированные задачи', cards: [] },
+            { name: 'Задачи в работе', cards: [] },
+            { name: 'Тестирование', cards: [] },
+            { name: 'Выполненные задачи', cards: [] }
+        ],
+        newCard: { title: '', description: '', deadline: '', comment: '' }
+    },
+    computed: {
+        isFormValid() {
+            return this.newCard.title && this.newCard.description && this.newCard.deadline;
+        },
+        canDelete() {
+            return this.columnIndex === 0;
+          },
+    },
+})
