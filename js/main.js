@@ -76,5 +76,28 @@ Vue.component('board', {
         moveToDone() {
             this.$emit('move-to-done', this.card, this.columnIndex, this.cardIndex);
         },
+        returnToInProgress() {
+            try {
+                const inProgressIndex = 1;
+                const isCardAlreadyInInProgress = this.$parent.columns[inProgressIndex].cards.some(card => card.title === this.card.title);
+    
+                if (!isCardAlreadyInInProgress) {
+                    this.$parent.columns[inProgressIndex].cards.push({
+                        title: this.card.title,
+                        description: this.card.description,
+                        deadline: this.card.deadline,
+                        dateCreated: this.card.dateCreated,
+                        lastEdited: new Date().toLocaleString(), 
+                        comment: this.card.comment
+                    });
+                }
+    
+                this.$parent.columns[this.columnIndex].cards.splice(this.cardIndex, 1);
+                this.card.comment = '';
+                this.click = false;
+            } catch (error) {
+                console.error('Ошибка в функции returnToInProgress:', error);
+            }
+        },
     }
 });
