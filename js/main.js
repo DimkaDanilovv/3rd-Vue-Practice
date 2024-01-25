@@ -144,4 +144,32 @@ new Vue({
             return this.columnIndex === 0;
           },
     },
+    methods: {
+        addCard(columnIndex) {
+            if (columnIndex === 0 && this.isFormValid) {
+                const newCard = {
+                    title: this.newCard.title,
+                    description: this.newCard.description,
+                    deadline: this.newCard.deadline,
+                    dateCreated: new Date().toLocaleString(),
+                    lastEdited: new Date().toLocaleString(),
+                    comment: this.newCard.comment
+
+                };
+                this.columns[columnIndex].cards.push(newCard);
+                this.clearNewCard();
+            }
+        },
+        clearNewCard() {
+            this.newCard = { title: '', description: '', deadline: '', comment: '' };
+        },
+        deleteCard(columnIndex, cardIndex) {
+            if (columnIndex >= 0 && columnIndex < this.columns.length) {
+                if (cardIndex >= 0 && cardIndex < this.columns[columnIndex].cards.length) {
+                    
+                    this.columns[columnIndex].cards.splice(cardIndex, 1);
+                }
+            }
+        },
+    }
 })
