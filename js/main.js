@@ -42,16 +42,16 @@ Vue.component('board', {
         return {
             showEditForm: false,
             editedTitle: this.card.title,
-            editedDescription: this.card.description,
+            editedDescription: this.card.description, //Данные для редактирования
             editedDeadline: this.card.deadline,
-            click: false,
+            click: false, //клик для комментария
         };
     },
     methods: {
         editCard() {
-            this.showEditForm = true;
+            this.showEditForm = true; //Показывает форму редактирования карточки
         },
-        saveEdits() {
+        saveEdits() { //Сохраняет внесенные изменения в карточке
             this.card.title = this.editedTitle;
             this.card.description = this.editedDescription;
             this.card.deadline = this.editedDeadline;
@@ -59,28 +59,28 @@ Vue.component('board', {
             this.showEditForm = false;
         },
         onClick(){
-            this.click = true;
+            this.click = true; //функция клика к комменту
         },
         cancelEdits() {
-            this.showEditForm = false;
+            this.showEditForm = false; //отменить изменения редактирования
         },
         deleteCard() {
-            this.$emit('delete-card', this.columnIndex, this.cardIndex);
+            this.$emit('delete-card', this.columnIndex, this.cardIndex); //функция удаление карты в первом столбце
         },
         moveToInProgress() {
-            this.$emit('move-to-in-progress', this.card, this.columnIndex, this.cardIndex);
+            this.$emit('move-to-in-progress', this.card, this.columnIndex, this.cardIndex); //перенос в работу
         },
         moveToTesting() {
-            this.$emit('move-to-testing', this.card, this.columnIndex, this.cardIndex);
+            this.$emit('move-to-testing', this.card, this.columnIndex, this.cardIndex); //перенос в тестирование
         },
         moveToDone() {
-            this.$emit('move-to-done', this.card, this.columnIndex, this.cardIndex);
+            this.$emit('move-to-done', this.card, this.columnIndex, this.cardIndex); //перенос в выполненные
         },
-        returnToInProgress() {
+        returnToInProgress() { //большая функция с процессом
             try {
-                const inProgressIndex = 1;
+                const inProgressIndex = 1; //индекс колонки
                 const isCardAlreadyInInProgress = this.$parent.columns[inProgressIndex].cards.some(card => card.title === this.card.title);
-    
+                //Проверяет, существует ли уже карточка с таким же заголовком в колонке задачи в работе
                 if (!isCardAlreadyInInProgress) {
                     this.$parent.columns[inProgressIndex].cards.push({
                         title: this.card.title,
@@ -99,8 +99,8 @@ Vue.component('board', {
                 console.error('Ошибка в функции returnToInProgress:', error);
             }
         },
-        moveToCompletedWithDeadlineCheck() {
-            const completedIndex = 3;
+        moveToCompletedWithDeadlineCheck() { //проверка deadline 
+            const completedIndex = 3; //индекс колонки
             const deadline = new Date(this.card.deadline);
             const currentDate = new Date();
 
@@ -126,7 +126,7 @@ Vue.component('board', {
 });
 
 new Vue({
-    el: '#app',
+    el: '#app', //все для создания и работы с картами
     data: {
         columns: [
             { name: 'Запланированные задачи', cards: [] },
@@ -138,15 +138,15 @@ new Vue({
     },
     computed: {
         isFormValid() {
-            return this.newCard.title && this.newCard.description && this.newCard.deadline;
+            return this.newCard.title && this.newCard.description && this.newCard.deadline; //проверка карты перед созданием
         },
         canDelete() {
-            return this.columnIndex === 0;
+            return this.columnIndex === 0; //удаление для первого столбца
           },
     },
     methods: {
         addCard(columnIndex) {
-            if (columnIndex === 0 && this.isFormValid) {
+            if (columnIndex === 0 && this.isFormValid) { //создает новую карту
                 const newCard = {
                     title: this.newCard.title,
                     description: this.newCard.description,
@@ -161,9 +161,9 @@ new Vue({
             }
         },
         clearNewCard() {
-            this.newCard = { title: '', description: '', deadline: '', comment: '' };
+            this.newCard = { title: '', description: '', deadline: '', comment: '' }; //очищает данные формы для повторного заполнения
         },
-        deleteCard(columnIndex, cardIndex) {
+        deleteCard(columnIndex, cardIndex) { //функция для удаления карты в первом столбце
             if (columnIndex >= 0 && columnIndex < this.columns.length) {
                 if (cardIndex >= 0 && cardIndex < this.columns[columnIndex].cards.length) {
                     
@@ -171,7 +171,7 @@ new Vue({
                 }
             }
         },
-        moveToInProgress(originalCard, columnIndex, cardIndex) {
+        moveToInProgress(originalCard, columnIndex, cardIndex) { //перенос карты в колонку в процессе
             const inProgressIndex = 1;
 
             this.columns[inProgressIndex].cards.push({
@@ -185,7 +185,7 @@ new Vue({
 
             this.columns[columnIndex].cards.splice(cardIndex, 1);
         },
-        moveToTesting(originalCard, columnIndex, cardIndex) {
+        moveToTesting(originalCard, columnIndex, cardIndex) { //перенос карты в колонку в тестирование
             const testingIndex = 2;
 
             this.columns[testingIndex].cards.push({
@@ -199,7 +199,7 @@ new Vue({
 
             this.columns[columnIndex].cards.splice(cardIndex, 1);
         },
-        moveToDone(originalCard, columnIndex, cardIndex) {
+        moveToDone(originalCard, columnIndex, cardIndex) { //перенос карты в колонку выполненные задачи
             const doneIndex = 3;
 
             this.columns[doneIndex].cards.push({
@@ -213,7 +213,7 @@ new Vue({
 
             this.columns[columnIndex].cards.splice(cardIndex, 1);
         },
-        moveToCompletedWithDeadlineCheck(originalCard, columnIndex, cardIndex) {
+        moveToCompletedWithDeadlineCheck(originalCard, columnIndex, cardIndex) { //проверка последнего столбца с deadline
             const completedIndex = 3;
 
             const deadline = new Date(originalCard.deadline);
