@@ -99,5 +99,28 @@ Vue.component('board', {
                 console.error('Ошибка в функции returnToInProgress:', error);
             }
         },
+        moveToCompletedWithDeadlineCheck() {
+            const completedIndex = 3;
+            const deadline = new Date(this.card.deadline);
+            const currentDate = new Date();
+
+            if (currentDate > deadline) {
+                this.card.status = 'С опозданием';
+            } else {
+                this.card.status = 'Закончено во время';
+            }
+
+            this.$parent.columns[completedIndex].cards.push({
+                title: this.card.title,
+                description: this.card.description,
+                deadline: this.card.deadline,
+                dateCreated: this.card.dateCreated,
+                lastEdited: new Date().toLocaleString(),
+                status: this.card.status,
+                comment: this.card.comment
+            });
+
+            this.$parent.columns[this.columnIndex].cards.splice(this.cardIndex, 1);
+        }
     }
 });
