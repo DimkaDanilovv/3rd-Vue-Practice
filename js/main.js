@@ -8,6 +8,11 @@ Vue.component('board', {
             <div class="card-date">Последнее изменение: {{ card.lastEdited }}</div>
             <div class="card-description">{{ card.description }}</div>
             <div class="card-deadline" v-if="card.deadline">Deadline: {{ card.deadline }}</div>
+
+            <div class="card-status" v-if='columnIndex === 3'>
+            {{ columnIndex === 3 && currentDate > deadlinefilter ? 'Статус: Просрочено ' : 'Статус: Сдано вовремя' }}
+            </div>
+
             <div class="card-status" v-if="card.status">Статус: {{ card.status }}</div>
             <div v-if="card.comment">Причина: {{ card.comment }}</div>
 
@@ -18,7 +23,7 @@ Vue.component('board', {
                 <button v-if="columnIndex === 1" @click="moveToTesting">Перенести в тестирование</button>
                 <button v-if="columnIndex === 2" @click="moveToDone">Перенести в выполненные</button>
                 <button v-if="columnIndex === 2" @click="onClick">Вернуть в работу</button>
-                <button v-if="columnIndex === 3" @click="moveToCompletedWithDeadlineCheck">Проверить статус </button>
+                
             </div>
 
             <div v-if="showEditForm" class="edit-form">
@@ -45,7 +50,16 @@ Vue.component('board', {
             editedDescription: this.card.description, //Данные для редактирования
             editedDeadline: this.card.deadline,
             click: false, //клик для комментария
+            deadlinefilter: new Date(this.card.deadline)
         };
+    },
+    computed: {
+        currentDate() {
+            return new Date()
+        },
+        deadline() {
+            return new Date(originalCard.deadline);
+        }
     },
     methods: {
         editCard() {
@@ -201,7 +215,6 @@ new Vue({
         },
         moveToDone(originalCard, columnIndex, cardIndex) { //перенос карты в колонку выполненные задачи
             const doneIndex = 3;
-
             this.columns[doneIndex].cards.push({
                 title: originalCard.title,
                 description: originalCard.description,
@@ -210,7 +223,7 @@ new Vue({
                 lastEdited: originalCard.lastEdited,
                 comment: originalCard.comment
             });
-
+           
             this.columns[columnIndex].cards.splice(cardIndex, 1);
         },
         moveToCompletedWithDeadlineCheck(originalCard, columnIndex, cardIndex) { //проверка последнего столбца с deadline
@@ -236,6 +249,7 @@ new Vue({
             });
 
             this.columns[columnIndex].cards.splice(cardIndex, 1);
+            
         }
     }
 });
